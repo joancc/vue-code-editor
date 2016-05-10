@@ -1,44 +1,32 @@
 <style lang="sass" scoped>
-  $borderColor: red;
-  #codemirror{
-    border: 2px solid $borderColor;
-    width: 500px;
-  }
-
-  .flex-center{
-    display: flex;
-    flex-flow: row;
-  }
 </style>
 
 <template>
-  <div id='codemirror'></div>
+  <div>
+    <code-editor></code-editor>
+  </div>
 </template>
 
 <script>
-    import CodeMirror from 'codemirror';
-    import "codemirror/mode/javascript/javascript.js";
+  import CodeEditor from './CodeEditor.vue';
 
-    export default{
-        props: {
+  export default{
+      props: {
 
-        },
-        data() {
-            return {
+      },
+      data() {
+          return {
 
-            };
-        },
-        methods: {
+          };
+      },
+      methods: {
 
-        },
-        ready(){
-          var cm = CodeMirror(document.getElementById('codemirror'), {
-            value: 'function setup() {\n  print("hello from codemirror");\n}',
-            mode: 'javascript'
-          });
-        },
-        components:{
+      },
+      ready(){
 
-        }
-    }
+      },
+      components:{
+        CodeEditor
+      }
+  }
 </script>
