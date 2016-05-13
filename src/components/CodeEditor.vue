@@ -1,6 +1,6 @@
 <style lang="sass" scoped>
   $borderColor: red;
-  #codemirror{
+  .code{
     border: 2px solid $borderColor;
     width: 500px;
   }
@@ -14,42 +14,156 @@
     display: flex;
     flex-flow: row;
   }
+
+  .flex-row-between{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+
+  .controls{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    border: 2px solid red;
+  }
 </style>
 
 <template>
-  <div id="codeContainer" v-el>
-    <div id='codemirror'></div>
+  <div id="codeContainer" v-el:container>
+    <div>
+      <div class="controls">
+        <div>
+          <button @click="play">Play</button>
+          <button @click="save">Save</button>
+        </div>
+        <div>
+          <button @click="changeMode('javascript')">JS</button>
+          <button @click="changeMode('htmlmixed')">HTML</button>
+          <button @click="changeMode('text/css')">CSS</button>
+        </div>
+      </div>
+      <div v-el:codemirror class="code"></div>
+    </div>
+    <!-- iframe gets inserted here -->
   </div>
 </template>
 
 <script>
     import CodeMirror from 'codemirror';
-    import "codemirror/mode/javascript/javascript.js";
+    // Load language modes
+    import "codemirror/mode/javascript/javascript.js"; //javascript
+    import "codemirror/mode/css/css.js"; //text/css
+    import "codemirror/mode/htmlmixed/htmlmixed.js"; //htmlmixed
+    // THEMES
+    // import "codemirror/theme/monokai.css";
 
     export default{
-        props: [],
+        props: ['mode'],
         data() {
             return {
               cm: {
                 type: Object
               },
-              defaultCode: "function setup() {\n  print('hello from codemirror');\n}"
+
+              html: '<div id="intro" style="width: 100px; height: 100px;"></div>',
+              css: '',
+              js: "d3.select('#intro')\n\t.append('svg')\n\t.append('circle')\n\t.attr({cx: 25, cy: 25, r: 20, fill: 'red'});",
+
+              iframe: null
             };
         },
         methods: {
           insertIframe: function(){
-            let iframe = document.createElement('iframe');
+            this.iframe = document.createElement('iframe');
+            this.$els.container.appendChild(this.iframe);
 
-            this.$el.appendChild(iframe);
-            iframe.setAttribute('src', 'dist/preview.html');
+            // TO SET IFRAME CONTENT CAN REF ANOTHER HTML FILE OR INJECT
+
+            // OTHER FILE
+            this.iframe.setAttribute('src', 'dist/preview.html');
+
+            // INJECT
+            // Note that the closing script tags forward slash must be escaped
+            // let html = `<!DOCTYPE html>
+            //                  <meta charset="utf-8">
+            //                  <title>Preview</title>
+            //                  <body>
+            //                    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"><\/script>
+            //                    <script>d3.select("body").append("p").text("New paragraph!");
+            //                 <\/script>
+            //                  </body>
+            //                  `;
+            // iframe.contentWindow.document.open();
+            // iframe.contentWindow.document.write(html);
+            // iframe.contentWindow.document.close();
+          },
+          play: function(){
+            // INJECT
+            // Note that the closing script tags forward slash must be escaped
+            let html = `<!DOCTYPE html>
+                             <meta charset="utf-8">
+                             <title>Preview</title>
+                             <body>
+                                <style>${this.css}</style>
+                                ${this.html}
+                               <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"><\/script>
+                               <script>
+                                ${this.js}
+                               <\/script>
+                             </body>
+                             `;
+            console.log(html);
+            this.iframe.contentWindow.document.open();
+            this.iframe.contentWindow.document.write(html);
+            this.iframe.contentWindow.document.close();
+          },
+          changeMode: function(mode){
+            this.mode = mode;
+            this.cm.setOption("mode", mode);
+
+            let code = '';
+            switch(this.mode){
+              case 'javascript':
+                code = this.js;
+                break;
+              case 'htmlmixed':
+                code = this.html;
+                break;
+              case 'text/css':
+                code = this.css;
+                break;
+              default:
+                console.log("Invalid mode");
+            }
+            this.cm.setValue(code);
+          },
+          save: function(){
+            console.log("Saving mode: " + this.mode);
+            switch(this.mode){
+              case 'javascript':
+                this.js = this.cm.getValue();
+                break;
+              case 'htmlmixed':
+                this.html = this.cm.getValue();
+                break;
+              case 'text/css':
+                this.css = this.cm.getValue();
+                break;
+              default:
+                console.log("Invalid mode");
+            }
+
           }
         },
         ready(){
 
-          this.cm = CodeMirror(document.getElementById('codemirror'), {
-            value: this.defaultCode,
-            mode: 'javascript',
-            lineNumbers: true
+          this.cm = CodeMirror(
+            this.$els.codemirror,
+            {
+            mode: this.mode,
+            lineNumbers: true,
+            theme: 'monokai'
           });
           this.insertIframe();
         },

@@ -3,7 +3,9 @@
 
 <template>
   <div>
-    <code-editor></code-editor>
+    <code-editor mode="javascript"></code-editor>
+    <!-- <code-editor mode="text/css"></code-editor>
+    <code-editor mode="htmlmixed"></code-editor> -->
   </div>
 </template>
 
