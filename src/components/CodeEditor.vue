@@ -68,8 +68,20 @@
 
               html: '<div id="intro" style="width: 100px; height: 100px;"></div>',
               css: '',
-              js: "d3.select('#intro')\n\t.append('svg')\n\t.append('circle')\n\t.attr({cx: 25, cy: 25, r: 20, fill: 'red'});",
-
+              js: `d3.select("body")
+                    .append("svg")
+                    .append("rect")
+                    .attr('x', 10)
+                    .attr('y', 10)
+                    .attr('width', 10)
+                    .attr('height', 10);
+                    d3.select("body")
+                    .append("svg")
+                    .append("circle")
+                    .attr('cx', 50)
+                    .attr('cy', 50)
+                    .attr('r', 50);
+                `,
               iframe: null
             };
         },
@@ -107,7 +119,9 @@
                              <body>
                                 <style>${this.css}</style>
                                 ${this.html}
-                               <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"><\/script>
+
+                                <script src="https://d3js.org/d3.v4.0.0-alpha.40.min.js"><\/script>
+
                                <script>
                                 ${this.js}
                                <\/script>
