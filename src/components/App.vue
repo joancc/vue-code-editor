@@ -2,15 +2,17 @@
 </style>
 
 <template>
-  <div>
-    <code-editor mode="javascript"></code-editor>
-    <!-- <code-editor mode="text/css"></code-editor>
-    <code-editor mode="htmlmixed"></code-editor> -->
+  <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--8-col mdl-cell--2-offset">
+      <code-editor mode="javascript"></code-editor>
+    </div>
   </div>
+
 </template>
 
 <script>
   import CodeEditor from './CodeEditor.vue';
+  import SplitPane from './SplitPane.vue';
 
   export default{
       props: {
@@ -28,7 +30,8 @@
 
       },
       components:{
-        CodeEditor
+        CodeEditor,
+        SplitPane
       }
   }
 </script>

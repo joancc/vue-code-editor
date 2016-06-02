@@ -1,8 +1,16 @@
+<!-- Based on vuejs tools -->
 <style lang="sass" scoped>
   $borderColor: red;
   .code{
     border: 2px solid $borderColor;
-    width: 500px;
+    // width: 500px;
+    width: 100%;
+  }
+  .controls{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    border: 2px solid red;
   }
 
   #codeContainer{
@@ -20,33 +28,37 @@
     flex-flow: row;
     justify-content: space-between;
   }
-
-  .controls{
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    border: 2px solid red;
-  }
 </style>
 
 <template>
-  <div id="codeContainer" v-el:container>
-    <div>
-      <div class="controls">
-        <div>
-          <button @click="play">Play</button>
-          <button @click="save">Save</button>
+  <!-- <div v-el:container style="display: flex; flex-flow: row;"> -->
+
+  <!-- <div> -->
+    <split-pane>
+      <!-- Editor and Controls -->
+      <div slot="left" style="width: 100%;">
+        <div class="controls">
+          <div>
+            <button @click="play">Play</button>
+            <button @click="save">Save</button>
+          </div>
+          <div>
+            <button @click="changeMode('javascript')">JS</button>
+            <button @click="changeMode('htmlmixed')">HTML</button>
+            <button @click="changeMode('text/css')">CSS</button>
+          </div>
         </div>
-        <div>
-          <button @click="changeMode('javascript')">JS</button>
-          <button @click="changeMode('htmlmixed')">HTML</button>
-          <button @click="changeMode('text/css')">CSS</button>
+        <div id="codeContainer">
+          <div v-el:codemirror class="code"></div>
+          <!-- iframe gets inserted here -->
         </div>
       </div>
-      <div v-el:codemirror class="code"></div>
-    </div>
-    <!-- iframe gets inserted here -->
-  </div>
+      <!-- Preview iframe inserted here -->
+      <div slot="right" id="iframeContainer"></div>
+    </split-pane>
+  <!-- </div> -->
+
+  <!-- </div> -->
 </template>
 
 <script>
@@ -57,6 +69,8 @@
     import "codemirror/mode/htmlmixed/htmlmixed.js"; //htmlmixed
     // THEMES
     // import "codemirror/theme/monokai.css";
+
+    import SplitPane from './SplitPane.vue';
 
     export default{
         props: ['mode'],
@@ -88,7 +102,7 @@
         methods: {
           insertIframe: function(){
             this.iframe = document.createElement('iframe');
-            this.$els.container.appendChild(this.iframe);
+            document.querySelector('#iframeContainer').appendChild(this.iframe);
 
             // TO SET IFRAME CONTENT CAN REF ANOTHER HTML FILE OR INJECT
 
@@ -182,7 +196,7 @@
           this.insertIframe();
         },
         components:{
-
+          SplitPane
         }
     }
 </script>
