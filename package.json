@@ -1,12 +1,13 @@
 {
-  "name": "vue-graphs",
+  "name": "vue-code-editor",
   "version": "1.0.0",
   "description": "",
   "main": "datamaps.us.js",
   "scripts": {
     "dev": "webpack-dev-server --progress --colors --inline --hot --port=5050",
     "watch": "webpack --progress --colors --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "test": "webpack && mocha-phantomjs test/index.html"
   },
   "devDependencies": {
     "babel-core": "^6.5.1",
@@ -33,9 +34,11 @@
     "chart.js": "^2.1.0",
     "codemirror": "^5.14.2",
     "d3": "^4.0.0-alpha.35",
+    "monaco-editor": "^0.5.1",
     "vue": "^1.0.16",
     "vue-resource": "^0.1.17",
-    "vue-router": "^0.7.5"
+    "vue-router": "^0.7.5",
+    "vuex": "^0.8.2"
   },
   "keywords": [],
   "author": "",

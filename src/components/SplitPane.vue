@@ -17,9 +17,10 @@
 
 <script>
 export default {
+  props: ['split'],
   data () {
     return {
-      split: 50,
+      // split: 50,
       dragging: false
     }
   },
