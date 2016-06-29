@@ -1,10 +1,10 @@
 // main.js
-var Vue = require('vue')
-var VueResource = require('vue-resource')
+import Vue from 'vue'
+import VueResource from 'vue-resource'
 
 Vue.use(VueResource);
 
-var App = require('./src/components/App.vue')
+let App = require('./src/components/App.vue')
 
 // mount a root Vue instance
 new Vue({

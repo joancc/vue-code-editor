@@ -10,28 +10,7 @@
 
       <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
-        <split-pane :split="splitPercent">
-          <!-- Editor and Controls -->
-          <div slot="left">
-            <div id="codeContainer">
-
-              <div class="mdl-tabs__tab-bar">
-                  <a href="#tab1" class="mdl-tabs__tab is-active">tab1</a>
-                  <a href="#tab2" class="mdl-tabs__tab">tab2</a>
-              </div>
-
-              <div class="mdl-tabs__panel is-active" id="tab1">
-                <editor mode="htmlmixed"></editor>
-              </div>
-              <div class="mdl-tabs__panel" id="tab2">
-                <editor mode="javascript"></editor>
-              </div>
-
-            </div>
-          </div>
-          <!-- Preview iframe inserted here -->
-          <div slot="right" id="iframeContainer"></div>
-        </split-pane>
+        <sandbox></sandbox>
 
         <hr>
         <hr>
@@ -47,8 +26,9 @@
 
 <script>
   import CodeEditor from './CodeEditor.vue';
-  import Editor from './Editor.vue';
-  import SplitPane from './SplitPane.vue';
+  import Sandbox from './Sandbox.vue';
+
+  import store from '../vuex/store'
 
   export default{
       props: {
@@ -71,8 +51,8 @@
       },
       components:{
         CodeEditor,
-        SplitPane,
-        Editor
-      }
+        Sandbox
+      },
+      store
   }
 </script>

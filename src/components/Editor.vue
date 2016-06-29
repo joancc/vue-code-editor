@@ -48,6 +48,7 @@
     // THEMES
     // import "codemirror/theme/monokai.css";
 
+    import { updateCode } from '../vuex/actions'
 
     const d3Test = `d3.select("body")
                     .append("svg")
@@ -80,17 +81,20 @@
                 `;
 
     export default{
-        props: ['mode'],
+        props: ['mode', 'height'],
         data() {
             return {
               cm: {
                 type: Object
               },
-              editorHeight: '550px',
+
               code: p5Test
             };
         },
         methods: {
+        },
+        watch: {
+
         },
         ready(){
 
@@ -103,9 +107,23 @@
           });
           this.cm.setSize('100%', this.editorHeight);
 
+          this.cm.on("change", function(cm, change) {
+
+            this.code = cm.getValue()
+            this.save('javascript', this.code)
+
+          }.bind(this))
+
+          // Vuex action
+          this.save('javascript', 'alpha');
         },
         components:{
 
+        },
+        vuex: {
+          actions:{
+            save: updateCode
+          }
         }
     }
 </script>
