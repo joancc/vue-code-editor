@@ -58,6 +58,7 @@
         // TODO: make vue directive to handle MDL dynamic insertions
         // Currently used to render tabs properly
         componentHandler.upgradeDom();
+
       },
       components:{
         SplitPane,

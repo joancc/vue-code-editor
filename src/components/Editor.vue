@@ -49,6 +49,8 @@
     // import "codemirror/theme/monokai.css";
 
     import { updateCode } from '../vuex/actions'
+    import {JSHINT} from 'jshint';
+    import _ from 'lodash';
 
     const d3Test = `d3.select("body")
                     .append("svg")
@@ -92,12 +94,29 @@
             };
         },
         methods: {
+          validateCode: function(code){
+            console.log("jshint validation")
+            JSHINT(code);
+            for (var i = 0; i < JSHINT.errors.length; i++) {
+              var err = JSHINT.errors[i];
+              if (!err) continue;
+
+              console.log(err.reason);
+            }
+
+            if(JSHINT.errors.length < 1){
+              console.log("No errors found")
+              this.code = code;
+              this.save('javascript', this.code);
+            }
+
+          }
         },
         watch: {
 
         },
         ready(){
-
+          // Init CM
           this.cm = CodeMirror(
             this.$els.codemirror,
             {
@@ -107,15 +126,12 @@
           });
           this.cm.setSize('100%', this.editorHeight);
 
+          // Create debounce func for code validation
+          let validate = _.debounce(this.validateCode, 500);
           this.cm.on("change", function(cm, change) {
-
-            this.code = cm.getValue()
-            this.save('javascript', this.code)
-
+            let code = cm.getValue();
+            validate(code);
           }.bind(this))
-
-          // Vuex action
-          this.save('javascript', 'alpha');
         },
         components:{
 

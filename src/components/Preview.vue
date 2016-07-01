@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div id="iframeContainer"></div>
+  <div style="border:2px solid blue;" id="iframeContainer"></div>
 </template>
 
 <script>
@@ -43,7 +43,6 @@
       ready(){
         // TODO: make vue directive to handle MDL dynamic insertions
         // Currently used to render tabs properly
-        componentHandler.upgradeDom();
         this.insertIframe();
       },
       components:{
