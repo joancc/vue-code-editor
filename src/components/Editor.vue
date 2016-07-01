@@ -94,7 +94,7 @@
             };
         },
         methods: {
-          validateCode: function(code){
+          validateJS: function(code){
             console.log("jshint validation")
             JSHINT(code);
             for (var i = 0; i < JSHINT.errors.length; i++) {
@@ -127,11 +127,13 @@
           this.cm.setSize('100%', this.editorHeight);
 
           // Create debounce func for code validation
-          let validate = _.debounce(this.validateCode, 500);
-          this.cm.on("change", function(cm, change) {
-            let code = cm.getValue();
-            validate(code);
-          }.bind(this))
+          if(this.mode == 'javascript'){
+            let _validateJS = _.debounce(this.validateJS, 500);
+            this.cm.on("change", function(cm, change) {
+              let code = cm.getValue();
+              _validateJS(code);
+            }.bind(this))
+          }
         },
         components:{
 
