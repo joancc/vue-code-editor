@@ -34,6 +34,7 @@
     "chart.js": "^2.1.0",
     "codemirror": "^5.14.2",
     "d3": "^4.0.0-alpha.35",
+    "esprima": "^2.7.2",
     "jshint": "^2.9.2",
     "lodash": "^4.13.1",
     "monaco-editor": "^0.5.1",

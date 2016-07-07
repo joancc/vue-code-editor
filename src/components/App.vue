@@ -10,7 +10,7 @@
 
       <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
-        <sandbox></sandbox>
+        <sandbox :editors="editors"></sandbox>
 
         <hr>
         <hr>
@@ -36,7 +36,21 @@
       },
       data() {
           return {
-            splitPercent: 50
+            splitPercent: 50,
+            editors: [
+              {
+                lang: 'html',
+                src: 'dist/preview.js',
+                abbr: 'js',
+                mode: 'javascript'
+              },
+              {
+                lang: 'html',
+                src: 'dist/preview.html',
+                abbr: 'html',
+                mode: 'htmlmixed'
+              },
+            ]
           };
       },
       methods: {

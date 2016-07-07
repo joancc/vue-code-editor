@@ -83,14 +83,14 @@
                 `;
 
     export default{
-        props: ['mode', 'height'],
+        props: ['mode', 'height', 'src'],
         data() {
             return {
               cm: {
                 type: Object
               },
 
-              code: p5Test
+              code: ''
             };
         },
         methods: {
@@ -133,6 +133,19 @@
               let code = cm.getValue();
               _validateJS(code);
             }.bind(this))
+          }
+
+          if(this.src){
+            // this.code = this.initCode;
+            this.$http.get(this.src).then(
+              (response) => {
+                console.log(response)
+                this.cm.setValue(response.data);
+              },
+              (response) => {
+                  console.log(response)
+              }
+            );
           }
         },
         components:{

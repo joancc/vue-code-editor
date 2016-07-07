@@ -12,21 +12,28 @@
         <div id="codeContainer">
 
           <div class="mdl-tabs__tab-bar">
-              <a href="#tab1" class="mdl-tabs__tab is-active">tab1</a>
-              <a href="#tab2" class="mdl-tabs__tab">tab2</a>
+            <a v-for="editor in editors" href="#editor_{{editor.abbr}}" class="mdl-tabs__tab">{{editor.abbr}}</a>
+              <!-- <a href="#editor1" class="mdl-tabs__tab">HTML</a>
+              <a href="#editor2" class="mdl-tabs__tab is-active">JS</a> -->
           </div>
 
-          <div class="mdl-tabs__panel is-active" id="tab1">
+          <div v-for="editor in editors" class="mdl-tabs__panel is-active" id="editor_{{editor.abbr}}">
+            <editor :mode="editor.mode" :src="editor.src" height="300px"></editor>
+          </div>
+          <!-- <div class="mdl-tabs__panel is-active" id="editor1">
             <editor mode="htmlmixed" height="300px"></editor>
           </div>
-          <div class="mdl-tabs__panel" id="tab2">
+          <div class="mdl-tabs__panel" id="editor2">
             <editor mode="javascript" height="300px"></editor>
-          </div>
+          </div> -->
 
         </div>
       </div>
       <!-- Preview iframe inserted here -->
       <div slot="right">
+        <div id="controls">
+          <button @click="resizePreview">Resize</button>
+        </div>
         <preview height="300px"></preview>
       </div>
     </split-pane>
@@ -41,17 +48,24 @@
   import store from '../vuex/store'
 
   export default{
-      props: {
-
-      },
+      props: ['editors'],
       data() {
           return {
             splitPercent: 50
           };
       },
+      computed: {
+      },
       methods: {
         saveCode: function(){
           console.log("save code");
+        },
+        resizePreview: function(){
+          if (this.splitPercent == 50) {
+            this.splitPercent = 0;
+          }else{
+            this.splitPercent = 50;
+          }
         }
       },
       ready(){
