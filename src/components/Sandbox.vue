@@ -1,39 +1,28 @@
+<!-- This is the real entry component. -->
 <style lang="sass" scoped>
-#codeContainer{
+  #editor{
     width: 100%;
   }
 </style>
 
 <template>
   <div>
-    <split-pane :split="splitPercent">
+    <div><toolbar></toolbar></div>
+    <split-pane :split="splitPercentEditorPreview">
       <!-- Editor and Controls -->
       <div slot="left">
-        <div id="codeContainer">
-
-          <div class="mdl-tabs__tab-bar">
-            <a v-for="editor in editors" href="#editor_{{editor.abbr}}" class="mdl-tabs__tab">{{editor.abbr}}</a>
-              <!-- <a href="#editor1" class="mdl-tabs__tab">HTML</a>
-              <a href="#editor2" class="mdl-tabs__tab is-active">JS</a> -->
+        <split-pane :split="splitPercentFilesEditor">
+          <div slot="left">
+            <file-menu></file-menu>
           </div>
-
-          <div v-for="editor in editors" class="mdl-tabs__panel is-active" id="editor_{{editor.abbr}}">
-            <editor :mode="editor.mode" :src="editor.src" height="300px"></editor>
+          <div slot="right" id="editor">
+            <editor height="300px"></editor>
           </div>
-          <!-- <div class="mdl-tabs__panel is-active" id="editor1">
-            <editor mode="htmlmixed" height="300px"></editor>
-          </div>
-          <div class="mdl-tabs__panel" id="editor2">
-            <editor mode="javascript" height="300px"></editor>
-          </div> -->
-
-        </div>
+        </split-pane>
       </div>
+
       <!-- Preview iframe inserted here -->
       <div slot="right">
-        <div id="controls">
-          <button @click="resizePreview">Resize</button>
-        </div>
         <preview height="300px"></preview>
       </div>
     </split-pane>
@@ -43,41 +32,36 @@
 <script>
   import Editor from './Editor.vue';
   import Preview from './Preview.vue';
+  import FileMenu from './FileMenu.vue';
+  import Toolbar from './Toolbar.vue';
   import SplitPane from './SplitPane.vue';
 
-  import store from '../vuex/store'
-
   export default{
-      props: ['editors'],
+      props: [],
       data() {
           return {
-            splitPercent: 50
+
           };
       },
       computed: {
       },
       methods: {
-        saveCode: function(){
-          console.log("save code");
-        },
-        resizePreview: function(){
-          if (this.splitPercent == 50) {
-            this.splitPercent = 0;
-          }else{
-            this.splitPercent = 50;
-          }
-        }
+
       },
       ready(){
-        // TODO: make vue directive to handle MDL dynamic insertions
-        // Currently used to render tabs properly
-        componentHandler.upgradeDom();
-
       },
       components:{
         SplitPane,
         Editor,
+        Toolbar,
+        FileMenu,
         Preview
+      },
+      vuex: {
+        getters: {
+          splitPercentEditorPreview: state => state.editor.splitPercent.editorPreview,
+          splitPercentFilesEditor: state => state.editor.splitPercent.filesEditor
+        }
       }
   }
 </script>

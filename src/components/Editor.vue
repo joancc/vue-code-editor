@@ -1,42 +1,10 @@
-<!-- Based on vuejs tools -->
 <style lang="sass" scoped>
-  // $borderColor: red;
-  // .code{
-  //   width: 100%;
-  // }
-
-  // .controls{
-  //   display: flex;
-  //   flex-flow: row;
-  //   justify-content: space-between;
-  //   border: 2px solid red;
-  // }
-
-  // #codeContainer{
-  //   display: flex;
-  //   flex-direction: row;
-  // }
-
-  // .flex-center{
-  //   display: flex;
-  //   flex-flow: row;
-  // }
-
-  // .flex-row-between{
-  //   display: flex;
-  //   flex-flow: row;
-  //   justify-content: space-between;
-  // }
 </style>
 
 <template>
-  <!-- <div v-el:container style="display: flex; flex-flow: row;"> -->
-
   <div>
     <div v-el:codemirror class="code"></div>
   </div>
-
-  <!-- </div> -->
 </template>
 
 <script>
@@ -52,106 +20,104 @@
     import {JSHINT} from 'jshint';
     import _ from 'lodash';
 
-    const d3Test = `d3.select("body")
-                    .append("svg")
-                    .append("rect")
-                    .attr('x', 10)
-                    .attr('y', 10)
-                    .attr('width', 10)
-                    .attr('height', 10);
-                    d3.select("body")
-                    .append("svg")
-                    .append("circle")
-                    .attr('cx', 50)
-                    .attr('cy', 50)
-                    .attr('r', 50);
-                `;
-    const p5Test = `
-                function setup() {
-                  createCanvas(640, 500);
-                }
-
-                function draw() {
-                  if (mouseIsPressed) {
-                    fill(0);
-                  } else {
-                    fill(255);
-                  }
-                  ellipse(mouseX, mouseY, 80, 80);
-                }
-
-                `;
-
     export default{
-        props: ['mode', 'height', 'src'],
+        props: ['height'],
         data() {
             return {
               cm: {
                 type: Object
-              },
-
-              code: ''
+              }
             };
         },
-        methods: {
-          validateJS: function(code){
-            console.log("jshint validation")
-            JSHINT(code);
-            for (var i = 0; i < JSHINT.errors.length; i++) {
-              var err = JSHINT.errors[i];
-              if (!err) continue;
+        computed: {
+          mode: function(){
+            let filename = this.file.name;
+            let extension = /[^.]+$/.exec(filename)[0];
 
-              console.log(err.reason);
+            switch (extension) {
+              case 'js':
+                return 'javascript';
+              case 'html':
+                return 'htmlmixed';
+              case 'css':
+                return 'text/css';
+              default:
+                return null;
             }
 
-            if(JSHINT.errors.length < 1){
-              console.log("No errors found")
-              this.code = code;
-              this.save('javascript', this.code);
+          },
+          code: function(){
+            if(this.file){
+              return this.file.code;
+            }else{
+              return '';
             }
-
           }
         },
         watch: {
+        },
+        methods: {
+          // validateJS: function(code){
+          //   console.log("jshint validation")
+          //   JSHINT(code);
+          //   for (var i = 0; i < JSHINT.errors.length; i++) {
+          //     var err = JSHINT.errors[i];
+          //     if (!err) continue;
 
+          //     console.log(err.reason);
+          //   }
+
+          //   if(JSHINT.errors.length < 1){
+          //     console.log("No errors found")
+          //     this.code = code;
+          //     this.save('javascript', this.code);
+          //   }
+
+          // },
+          initCodeMirror: function(){
+            // Init CM
+            this.cm = CodeMirror(
+              this.$els.codemirror,
+              {
+              // mode: this.mode,
+              lineNumbers: true,
+              theme: 'monokai'
+            });
+            this.cm.setSize('100%', this.editorHeight);
+
+            // Create debounce func for code validation
+            // if(this.mode == 'javascript'){
+            //   let _validateJS = _.debounce(this.validateJS, 500);
+            //   this.cm.on("change", function(cm, change) {
+            //     let code = cm.getValue();
+            //     _validateJS(code);
+            //   }.bind(this))
+            // }
+
+            // this.cm.setValue(this.code);
+          },
+          loadFile: function(){
+            this.cm.setValue(this.code);
+            this.cm.setOption('mode', this.mode);
+          }
+        },
+        watch: {
+          'file': function(){
+            this.loadFile();
+          }
         },
         ready(){
-          // Init CM
-          this.cm = CodeMirror(
-            this.$els.codemirror,
-            {
-            mode: this.mode,
-            lineNumbers: true,
-            theme: 'monokai'
-          });
-          this.cm.setSize('100%', this.editorHeight);
-
-          // Create debounce func for code validation
-          if(this.mode == 'javascript'){
-            let _validateJS = _.debounce(this.validateJS, 500);
-            this.cm.on("change", function(cm, change) {
-              let code = cm.getValue();
-              _validateJS(code);
-            }.bind(this))
-          }
-
-          if(this.src){
-            // this.code = this.initCode;
-            this.$http.get(this.src).then(
-              (response) => {
-                console.log(response)
-                this.cm.setValue(response.data);
-              },
-              (response) => {
-                  console.log(response)
-              }
-            );
-          }
+          this.initCodeMirror();
+          this.loadFile();
         },
         components:{
 
         },
         vuex: {
+          getters:{
+            editor: state => state.editor,
+            file: state => state.editor.fileSelected
+          },
           actions:{
             save: updateCode
           }

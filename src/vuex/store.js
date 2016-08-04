@@ -7,7 +7,7 @@ import editor from './modules/editor'
 Vue.use(Vuex)
 
 const state = {
-  storeRoot: 12
+
 }
 
 const mutations = {

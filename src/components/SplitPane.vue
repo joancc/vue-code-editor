@@ -35,6 +35,9 @@ export default {
         let dx = e.pageX - this.startX
         let totalWidth = this.$el.offsetWidth
         this.split = this.startSplit + ~~(dx / totalWidth * 100)
+        console.log(this.startSplit)
+        console.log(totalWidth)
+        console.log(this.split)
       }
     },
     dragEnd () {
