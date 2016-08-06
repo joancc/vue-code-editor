@@ -6,24 +6,17 @@
 </style>
 
 <template>
-  <div>
+  <div style="border: 2px solid red;">
     <div><toolbar></toolbar></div>
     <split-pane :split="splitPercentEditorPreview">
-      <!-- Editor and Controls -->
-      <div slot="left">
-        <split-pane :split="splitPercentFilesEditor">
-          <div slot="left">
-            <file-menu></file-menu>
-          </div>
-          <div slot="right" id="editor">
-            <editor height="300px"></editor>
-          </div>
-        </split-pane>
+      <!-- Editor -->
+      <div slot="left" id="editor">
+        <editor height="50%"></editor>
       </div>
 
       <!-- Preview iframe inserted here -->
       <div slot="right">
-        <preview height="300px"></preview>
+        <preview height="50%"></preview>
       </div>
     </split-pane>
   </div>
@@ -37,7 +30,7 @@
   import SplitPane from './SplitPane.vue';
 
   export default{
-      props: [],
+      props: ['project'],
       data() {
           return {
 
@@ -54,13 +47,11 @@
         SplitPane,
         Editor,
         Toolbar,
-        FileMenu,
         Preview
       },
       vuex: {
         getters: {
-          splitPercentEditorPreview: state => state.editor.splitPercent.editorPreview,
-          splitPercentFilesEditor: state => state.editor.splitPercent.filesEditor
+          splitPercentEditorPreview: state => state.editor.splitPercent.editorPreview
         }
       }
   }

@@ -99,8 +99,7 @@
       },
       vuex: {
         getters: {
-          splitPercentEditorPreview: state => state.editor.splitPercent.editorPreview,
-          splitPercentFilesEditor: state => state.editor.splitPercent.filesEditor
+          splitPercentEditorPreview: state => state.editor.splitPercent.editorPreview
         },
         actions:{
           resize: resize

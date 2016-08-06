@@ -1,21 +1,20 @@
 // vuex/modules/editor.js
 import {
-  UPDATE_CODE,
   RESIZE,
-  UPDATE_FILE,
+  UPDATE_CODE,
   SELECT_FILE
 } from '../mutation-types'
 
 // TEST FILES SHOULD BE LOADED ASYNC OR SOMEWHERE ELSE
-let files = [
-{
+let files = {
+  'index.html':{
     name: 'index.html',
     code: `<body>
     <div>Alpha</div>
     </body>
                 `
   },
-  {
+  'd3Test.js': {
     name: 'd3Test.js',
     code: `d3.select("body")
                     .append("svg")
@@ -32,7 +31,7 @@ let files = [
                     .attr('r', 50);
                 `
   },
-  {
+  'p5Test.js': {
     name: 'p5Test.js',
     code: `function setup() {
                   createCanvas(640, 500);
@@ -46,13 +45,12 @@ let files = [
                   }
                   ellipse(mouseX, mouseY, 80, 80);
                 }`
-  },
-]
+  }
+}
 // initial state
 const state = {
-  dummy: 12,
   files: files,
-  fileSelected: files[0],
+  fileSelected: Object.keys(files)[0],
   splitPercent: {
     // Percent value defines size of the left hand item in the property name
     editorPreview: 50,
@@ -62,20 +60,13 @@ const state = {
 
 // mutations
 const mutations = {
-  [UPDATE_CODE] (state, key, code) {
-    let newCode = state.code;
-    newCode[key] = code;
-    state.code = newCode;
-  },
   [RESIZE] (state, key, value){
     let newSplit = state.splitPercent;
     newSplit[key] = value;
     state.splitPercent = newSplit;
   },
-  [UPDATE_FILE] (state, key, code){
-    let newCode = state.code;
-    newCode[key] = code;
-    state.code = newCode;
+  [UPDATE_CODE] (state, filename, code){
+    // let state.editor.files[filename].code = ;
   },
   [SELECT_FILE] (state, filename){
     for (var i = 0; i < state.files.length; i++) {;
