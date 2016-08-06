@@ -5,28 +5,22 @@
   <div>
     <nav class="nav" role="navigation" title="editor language selector">
       <ul>
-        <li class="mdl-button mdl-js-button">
-          <a @click="">
+        <li class="mdl-button mdl-js-button" @click="setEditorMode('htmlmixed')">
+          <a>
             HTML
           </a>
         </li>
-        <li class="mdl-button mdl-js-button" @click="">
+        <li class="mdl-button mdl-js-button" @click="setEditorMode('css')">
           <a>
             CSS
           </a>
         </li>
-        <li class="mdl-button mdl-js-button" @click="">
+        <li class="mdl-button mdl-js-button" @click="setEditorMode('javascript')">
           <a>
             JS
           </a>
         </li>
       </ul>
-      <!-- <ul className="nav__items-right" title="user-menu">
-        <li className="nav__item">
-          {props.user.authenticated && <p>Hello, {props.user.username}!</p>}
-          {!props.user.authenticated && <p><Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link></p>}
-        </li>
-      </ul> -->
     </nav>
     <div v-el:codemirror class="code"></div>
   </div>
@@ -51,55 +45,58 @@
             return {
               cm: {
                 type: Object
+              },
+              mode: 'javascript',
+              code: {
+                javascript: `var a = 12;`,
+                htmlmixed: `<!DOCTYPE html>
+                                    <html lang="en">
+                                    <head>
+                                      <meta charset="UTF-8">
+                                      <title>Preview</title>
+                                    </head>
+                                    <body>
+                                    A
+                                    </body>
+                                    </html>
+                                    `,
+                css: `background: red;`
               }
             };
         },
         computed: {
-          mode: function(){
-            let filename = this.file.name;
-            let extension = /[^.]+$/.exec(filename)[0];
-
-            switch (extension) {
-              case 'js':
-                return 'javascript';
-              case 'html':
-                return 'htmlmixed';
-              case 'css':
-                return 'text/css';
-              default:
-                return null;
-            }
-
-          },
-          code: function(){
-            if(this.file){
-              return this.file.code;
-            }else{
-              return '';
-            }
-          }
         },
         watch: {
         },
         methods: {
-          validateJS: function(code){
-            console.log("jshint validation")
-            JSHINT(code);
-            for (var i = 0; i < JSHINT.errors.length; i++) {
-              var err = JSHINT.errors[i];
-              if (!err) continue;
-
-              console.log(err.reason);
-            }
-
-            if(JSHINT.errors.length < 1){
-              console.log("No errors found")
-              this.code = code;
-              this.updateCode('javascript', this.code);
-            }
-
+          setEditorMode: function(val){
+            this.mode = val;
+            this.setEditorContent();
           },
-          initCodeMirror: function(){
+          // validateJS: function(code){
+          //   console.log("jshint validation")
+          //   JSHINT(code);
+          //   for (var i = 0; i < JSHINT.errors.length; i++) {
+          //     var err = JSHINT.errors[i];
+          //     if (!err) continue;
+
+          //     console.log(err.reason);
+          //   }
+
+          //   if(JSHINT.errors.length < 1){
+          //     console.log("No errors found")
+          //     this.code = code;
+          //     this.updateCode('javascript', this.code);
+          //   }
+
+          // },
+          validateCode: function(){
+            // TODO: Perform code validations
+
+            this.code[this.mode] = this.cm.getValue();
+            this.updateCode(this.code);
+          },
+          initEditor: function(){
             // Init CM
             this.cm = CodeMirror(
               this.$els.codemirror,
@@ -109,41 +106,36 @@
               theme: 'monokai'
             });
             this.cm.setSize('100%', this.editorHeight);
-          },
-          loadFile: function(){
-            this.cm.setOption('mode', this.mode);
 
             // Create debounce func for code validation
             if(this.mode == 'javascript'){
-              let _validateJS = _.debounce(this.validateJS, 500);
+              let validateCode = _.debounce(this.validateCode, 1000);
               this.cm.on("change", function(cm, change) {
-                let code = cm.getValue();
-                _validateJS(code);
+                validateCode();
               }.bind(this));
             }
+          },
+          setEditorContent: function(){
+            this.cm.setOption('mode', this.mode);
 
-            this.cm.setValue(this.code);
+            this.cm.setValue(this.code[this.mode]);
           }
         },
         watch: {
-          'file': function(){
-            this.loadFile();
-          }
         },
         ready(){
-          this.initCodeMirror();
-          this.loadFile();
+          this.initEditor();
+          this.setEditorContent();
         },
         components:{
 
         },
         vuex: {
           getters:{
-            editor: state => state.editor,
-            file: state => state.editor.fileSelected
+
           },
           actions:{
-            updateCode: updateCode
+            updateCode
           }
         }
     }

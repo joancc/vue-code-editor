@@ -3,20 +3,85 @@
   #editor{
     width: 100%;
   }
+
+  ul.nav__items-left{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+
+    list-style-type: none;
+
+    .btn{
+      min-width: 100px;
+      background: gray;
+      color: #666;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn:hover{
+      cursor: pointer;
+    }
+  }
 </style>
 
 <template>
   <div style="border: 2px solid red;">
-    <div><toolbar></toolbar></div>
-    <split-pane :split="splitPercentEditorPreview">
+    <div>
+      <nav class="nav" role="navigation" title="editor-toolbar">
+        <ul>
+          <li class="mdl-button mdl-js-button">
+            <a
+              @click="createProject"
+            >
+              New
+            </a>
+          </li>
+          <li class="mdl-button mdl-js-button">
+            <a
+              @click="saveProject"
+            >
+              Save
+            </a>
+          </li>
+          <li class="mdl-button mdl-js-button">
+            <a>
+              Open
+            </a>
+          </li>
+          <li class="mdl-button mdl-js-button">
+            <a @click="exportProjectAsZip">
+              Export (zip)
+            </a>
+          </li>
+          <li class="mdl-button mdl-js-button" @click="cloneProject">
+            <a>
+              Clone
+            </a>
+          </li>
+          <li class="mdl-button mdl-js-button" @click="resizePreview">
+            <a>
+              Resize
+            </a>
+          </li>
+        </ul>
+        <!-- <ul className="nav__items-right" title="user-menu">
+          <li className="nav__item">
+            {props.user.authenticated && <p>Hello, {props.user.username}!</p>}
+            {!props.user.authenticated && <p><Link to="/login">Login</Link> or <Link to="/signup">Sign Up</Link></p>}
+          </li>
+        </ul> -->
+      </nav>
+    </div>
+    <split-pane :split="splitPercent">
       <!-- Editor -->
       <div slot="left" id="editor">
-        <editor height="50%"></editor>
+        <editor height="100%"></editor>
       </div>
 
       <!-- Preview iframe inserted here -->
       <div slot="right">
-        <preview height="50%"></preview>
+        <preview height="100%"></preview>
       </div>
     </split-pane>
   </div>
@@ -25,34 +90,33 @@
 <script>
   import Editor from './Editor.vue';
   import Preview from './Preview.vue';
-  import FileMenu from './FileMenu.vue';
-  import Toolbar from './Toolbar.vue';
   import SplitPane from './SplitPane.vue';
 
   export default{
       props: ['project'],
       data() {
           return {
-
+            splitPercent: 50
           };
       },
       computed: {
       },
       methods: {
-
+        resizePreview: function(){
+          console.log("resize")
+          if (this.splitPercent == 50) {
+            this.splitPercent = 0;
+          }else{
+            this.splitPercent = 50;
+          }
+        }
       },
       ready(){
       },
       components:{
         SplitPane,
         Editor,
-        Toolbar,
         Preview
-      },
-      vuex: {
-        getters: {
-          splitPercentEditorPreview: state => state.editor.splitPercent.editorPreview
-        }
       }
   }
 </script>
