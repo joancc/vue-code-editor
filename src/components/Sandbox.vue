@@ -76,12 +76,12 @@
     <split-pane :split="splitPercent">
       <!-- Editor -->
       <div slot="left" id="editor">
-        <editor height="100%"></editor>
+        <editor :height="height"></editor>
       </div>
 
       <!-- Preview iframe inserted here -->
       <div slot="right">
-        <preview height="100%"></preview>
+        <preview :height="height"></preview>
       </div>
     </split-pane>
   </div>
@@ -91,17 +91,37 @@
   import Editor from './Editor.vue';
   import Preview from './Preview.vue';
   import SplitPane from './SplitPane.vue';
+  import JSZip from 'jszip';
+  import FileSaver from 'file-saver/FileSaver.js';
 
   export default{
       props: ['project'],
       data() {
           return {
-            splitPercent: 50
+            splitPercent: 50,
+            height: '450px'
           };
       },
       computed: {
       },
       methods: {
+        exportProjectAsZip:function(){
+          console.log('exporting');
+          var zip = new JSZip();
+          zip.file("index.html", this.code.htmlmixed);
+          zip.file("main.js", this.code.javascript);
+          zip.file("styles.css", this.code.css);
+          zip.generateAsync({type:"blob"})
+          .then(function(content) {
+              try {
+                  FileSaver.saveAs(content, "project.zip");
+              } catch (e) {
+                  alert("saveAs failed with " + e);
+              }
+          }).catch(function (e) {
+              alert("JSZip failed with " + e);
+          });
+        },
         resizePreview: function(){
           console.log("resize")
           if (this.splitPercent == 50) {
@@ -112,6 +132,11 @@
         }
       },
       ready(){
+      },
+      vuex: {
+        getters: {
+          code: state => state.editor.code
+        }
       },
       components:{
         SplitPane,

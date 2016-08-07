@@ -1,11 +1,29 @@
 <style lang="sass" scoped>
+.selected{
+  color: orange;
+}
 </style>
 
 <template>
   <div>
     <nav class="nav" role="navigation" title="editor language selector">
-      <ul>
-        <li class="mdl-button mdl-js-button" @click="setEditorMode('htmlmixed')">
+      <button
+        :class="{'selected': mode=='htmlmixed'}"
+        class="mdl-button mdl-js-button mdl-button--raised"
+        @click="setEditorMode('htmlmixed')"
+        >HTML</button>
+      <button
+        :class="{'selected': mode=='javascript'}"
+        class="mdl-button mdl-js-button mdl-button--raised"
+        @click="setEditorMode('javascript')"
+        >JS</button>
+        <button
+        :class="{'selected': mode=='css'}"
+        class="mdl-button mdl-js-button mdl-button--raised"
+        @click="setEditorMode('css')"
+        >CSS</button>
+      <!-- <ul>
+        <li :class="{'selected': true}" class="mdl-button mdl-js-button" @click="setEditorMode('htmlmixed')">
           <a>
             HTML
           </a>
@@ -20,7 +38,7 @@
             JS
           </a>
         </li>
-      </ul>
+      </ul> -->
     </nav>
     <div v-el:codemirror class="code"></div>
   </div>
@@ -47,21 +65,7 @@
                 type: Object
               },
               mode: 'javascript',
-              code: {
-                javascript: `var a = 12;`,
-                htmlmixed: `<!DOCTYPE html>
-                                    <html lang="en">
-                                    <head>
-                                      <meta charset="UTF-8">
-                                      <title>Preview</title>
-                                    </head>
-                                    <body>
-                                    A
-                                    </body>
-                                    </html>
-                                    `,
-                css: `background: red;`
-              }
+              code: this.initCode
             };
         },
         computed: {
@@ -105,7 +109,7 @@
               lineNumbers: true,
               theme: 'monokai'
             });
-            this.cm.setSize('100%', this.editorHeight);
+            this.cm.setSize('100%', this.height);
 
             // Create debounce func for code validation
             if(this.mode == 'javascript'){
@@ -132,7 +136,7 @@
         },
         vuex: {
           getters:{
-
+            initCode: state => state.editor.code
           },
           actions:{
             updateCode
